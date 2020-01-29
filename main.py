@@ -14,7 +14,7 @@ stop_words = stopwords.words('english')
 #secret directory to the dataset
 path = '../secret/data/'
 
-
+#hello
 #start your code here
 discharge_summary = pd.read_csv(path+'discharge_summary.csv',index_col=0)
 discharge_summary = discharge_summary.head(10)
