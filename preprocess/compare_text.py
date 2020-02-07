@@ -10,5 +10,5 @@ def compare(text,compared_data):
 	compared_data = compared_data.drop_duplicates()
 	compared_data = compared_data.sort_values(by='similarity', ascending=False)
 	compared_data = compared_data[compared_data['similarity']>80]
-	print(compared_data)
-
+	# print(compared_data)
+	return compared_data
