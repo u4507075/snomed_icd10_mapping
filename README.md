@@ -24,7 +24,8 @@
 
 ### Dataset
 
-### How to SSH to server
+### How to use SSH server
+#### Putty
 1. Enter IP address in "xxx.xxx.xxx.xxx" host name (or IP address) -> click "open"
 2. login as: (enter username)
 3. (enter password)
@@ -40,6 +41,13 @@
 13. [Ctrl] + [A] + [D] = exit the screen
 14. screen -S_(enter screen name) = create a new screen
 15. python3 (file name) = run your python file
+##### Github 
+1. git status = check status github (update or not)
+2. git fetch = refresh status form server (check update)
+3. git pull = pull update -> (enter username + password)
+4. git add . = add all new updates to local git (similarly to 'stages')
+5. git commit -m "(comment here)" = comment what you update to local git
+6. git push = push code from local git to server git (! always pull the lastest update prior to git push) -> (enter username + password)
 ### Download file from server on your computer command prompt 
 C:\Users\ASUS>scp root@xxx.xxx.xxx.xxx:~/icd10/secret/data/result2.csv C:\Users\ASUS\Documents\GitHub\secret\data\result2.csv
 
