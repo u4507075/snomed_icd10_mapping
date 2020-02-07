@@ -60,7 +60,7 @@ def map_icd10():
 	abnormality = pd.read_csv(path+'snomed/abnormality.csv',index_col=0)
 	procedure = pd.read_csv(path+'snomed/procedure.csv',index_col=0)
 
-	p = path+'result2.csv'
+	p = path+'result.csv'
 	file = Path(p)
 	if file.is_file():
 		os.remove(p)
@@ -77,8 +77,9 @@ def map_icd10():
 		result = result.sort_values(by='similarity', ascending=False)
 		if len(result)>0:
 			#print(row['sum_note'])
-			result = result.head(20)
-			print(result[['term','icd10_name','type','similarity']])
+			result = result.head(50)
+			result['id'] = index
+			print(result[['id','term','icd10_name','type','similarity']])
 			file = Path(p)
 			if file.is_file():
 				with open(p, 'a') as f:
