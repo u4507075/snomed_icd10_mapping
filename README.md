@@ -41,6 +41,7 @@
 13. [Ctrl] + [A] + [D] = exit the screen
 14. screen -S_(enter screen name) = create a new screen
 15. python3 (file name) = run your python file
+16. rm (file name) = to PERMANENTLY delete the file
 ##### Github 
 1. git status = check status github (update or not)
 2. git fetch = refresh status form server (check update)
