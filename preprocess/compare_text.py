@@ -13,3 +13,5 @@ def compare(text,compared_data):
 	#compared_data = compared_data[compared_data['similarity']>80]
 	#print(compared_data)
 	return compared_data
+
+

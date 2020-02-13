@@ -77,7 +77,7 @@ def map_icd10():
 		result = result.sort_values(by='similarity', ascending=False)
 		if len(result)>0:
 			#print(row['sum_note'])
-			result = result.head(50)
+			result = result.head(10)
 			result['id'] = index
 			print(result[['id','term','icd10_name','type','similarity']])
 			file = Path(p)
