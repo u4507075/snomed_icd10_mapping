@@ -43,9 +43,9 @@ def percent_n_score(row,subject):
 def algorithm_validity():
 	subject = pd.read_csv(path+'result_100.csv',index_col=0)
 	standard_result = pd.read_csv(path+'discharge_summary.csv')
-	standard_result = standard_result.head(10)
 	subject['icd10'] = subject['icd10'].apply(lambda x: convert(x))
 	standard_result['cal_validity_percent'] = standard_result.apply(lambda x: percent_n_score(x,subject), axis=1)
-	print(standard_result)
+	standard_result.to_csv(path+'result_100_validity_checked.csv')
+
 
 
