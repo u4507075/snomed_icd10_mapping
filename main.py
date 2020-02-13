@@ -6,6 +6,7 @@ from preprocess.compare_text import compare
 from pathlib import Path
 import os
 from nltk.corpus import stopwords
+from preprocess.compare_text import algorithm_validity
 
 # You will have to download the set of stop words the first time
 # import nltk
@@ -90,4 +91,5 @@ def map_icd10():
 			print('not found')
 
 #clean_data()
-map_icd10()
+#map_icd10()
+algorithm_validity()
