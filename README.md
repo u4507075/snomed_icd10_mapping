@@ -1,7 +1,7 @@
 # Auto-mapping ICD-10 using SNOMED-CT
 
 ## Researchers
-1. Natthanaphop Isaradech, fifth year medical student, Faculty of Medicine, Chiang Mai University, Chiang Mai, Thailand
+1. Natthanaphop Isaradech, forth year medical student, Faculty of Medicine, Chiang Mai University, Chiang Mai, Thailand
 2. Assistant Professor Piyapong Khumrin, MD, Faculty of Medicine, Chiang Mai University, Chiang Mai, Thailand
 
 ## Duration
