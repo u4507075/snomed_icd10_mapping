@@ -47,5 +47,14 @@ def algorithm_validity():
 	standard_result['cal_validity_percent'] = standard_result.apply(lambda x: percent_n_score(x,subject), axis=1)
 	standard_result.to_csv(path+'result_100_validity_checked.csv')
 
-
-
+def tf_idf():
+	
+	for df in pd.read_csv(path+'result_100.csv',index_col=0, chunksize=2000):
+		df['d'] = df['id'].groupby(df['id']).transform('count')
+		d = df.groupby(['id','term']).size().to_frame(name = 'f').reset_index()
+		result = pd.merge(df, d, on =["id","term"], how = 'inner')
+		result['tf'] = result['f']/result['d']
+		print (result[result['id'] == 803616])
+		#print (df[df['id'] == 803616][['id','term']])
+		#print (d[d['id'] == 803616])
+		break
