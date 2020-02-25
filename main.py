@@ -92,4 +92,5 @@ def map_icd10():
 
 #clean_data()
 #map_icd10()
-algorithm_validity()
+#algorithm_validity()
+
