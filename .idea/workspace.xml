@@ -22,7 +22,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Python.test-dont-save">
+  <component name="RunManager" selected="Python.main">
     <configuration name="compare_text" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="snomed_icd10_mapping" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -88,9 +88,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.test-dont-save" />
         <item itemvalue="Python.compare_text" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -120,22 +120,22 @@
       <screen x="0" y="0" width="1280" height="720" />
     </state>
     <state x="388" y="165" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.720@0.0.1280.720" timestamp="1582558786098" />
-    <state width="1259" height="274" key="GridCell.Tab.0.bottom" timestamp="1582559758417">
+    <state width="1259" height="264" key="GridCell.Tab.0.bottom" timestamp="1582645214837">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
-    <state width="1259" height="274" key="GridCell.Tab.0.bottom/0.0.1280.720@0.0.1280.720" timestamp="1582559758417" />
-    <state width="1259" height="274" key="GridCell.Tab.0.center" timestamp="1582559758416">
+    <state width="1259" height="264" key="GridCell.Tab.0.bottom/0.0.1280.720@0.0.1280.720" timestamp="1582645214837" />
+    <state width="1259" height="264" key="GridCell.Tab.0.center" timestamp="1582645214837">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
-    <state width="1259" height="274" key="GridCell.Tab.0.center/0.0.1280.720@0.0.1280.720" timestamp="1582559758416" />
-    <state width="1259" height="274" key="GridCell.Tab.0.left" timestamp="1582559758416">
+    <state width="1259" height="264" key="GridCell.Tab.0.center/0.0.1280.720@0.0.1280.720" timestamp="1582645214837" />
+    <state width="1259" height="264" key="GridCell.Tab.0.left" timestamp="1582645214837">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
-    <state width="1259" height="274" key="GridCell.Tab.0.left/0.0.1280.720@0.0.1280.720" timestamp="1582559758416" />
-    <state width="1259" height="274" key="GridCell.Tab.0.right" timestamp="1582559758416">
+    <state width="1259" height="264" key="GridCell.Tab.0.left/0.0.1280.720@0.0.1280.720" timestamp="1582645214837" />
+    <state width="1259" height="264" key="GridCell.Tab.0.right" timestamp="1582645214837">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
-    <state width="1259" height="274" key="GridCell.Tab.0.right/0.0.1280.720@0.0.1280.720" timestamp="1582559758416" />
+    <state width="1259" height="264" key="GridCell.Tab.0.right/0.0.1280.720@0.0.1280.720" timestamp="1582645214837" />
     <state width="1259" height="274" key="GridCell.Tab.1.bottom" timestamp="1582559758418">
       <screen x="0" y="0" width="1280" height="720" />
     </state>

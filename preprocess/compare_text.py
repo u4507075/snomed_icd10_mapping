@@ -39,16 +39,43 @@ def calculate(dx_code, predicted_icd):
         return 0
 
 
-def tf_idf():
-	
-	for df in pd.read_csv(path+'result_100.csv',index_col=0, chunksize=2000):
-		df['d'] = df['id'].groupby(df['id']).transform('count')
-		d = df.groupby(['id','term']).size().to_frame(name = 'f').reset_index()
-		result = pd.merge(df, d, on =["id","term"], how = 'inner')
-		result['tf'] = result['f']/result['d']
-		print (result[result['id'] == 803616])
-		#print (df[df['id'] == 803616][['id','term']])
-		#print (d[d['id'] == 803616])
-		break
+def percent_n_score(row, subject):
+    predicted_icd = subject[subject['id'] == row.id].icd10.values.tolist()
+    n_actual = 0
+    n_match = 0
+    for i in range(1, 14):
+        if row['dx' + str(i) + '_code'] is not np.nan:
+            n_match = n_match + calculate(row['dx' + str(i) + '_code'], predicted_icd)
+            n_actual = n_actual + 1
+    return n_match * 100 / n_actual
 
+
+def algorithm_validity():
+    subject = pd.read_csv(path + 'result_100.csv', index_col=0)
+    standard_result = pd.read_csv(path + 'discharge_summary.csv')
+    subject['icd10'] = subject['icd10'].apply(lambda x: convert(x))
+    standard_result['cal_validity_percent'] = standard_result.apply(lambda x: percent_n_score(x, subject), axis=1)
     standard_result.to_csv(path + 'result_100_validity_checked.csv')
+
+
+def tf_idf():
+    for df in pd.read_csv(path + 'result_100.csv', index_col=0, chunksize=50000):
+        df['d'] = df['id'].groupby(df['id']).transform('count')
+        d = df.groupby(['id', 'term']).size().to_frame(name='f').reset_index()
+        result = pd.merge(df, d, on=["id", "term"], how='inner')
+        result['tf'] = result['f'] / result['d']
+        result['N'] = len(result['id'].unique())
+        df_t = result.groupby(['term', 'id']).size().to_frame(name='df_t').reset_index()
+        df_t = df_t['term'].groupby(df_t['term']).count().reset_index(name='df_t')
+        result = pd.merge(result, df_t, on=["term"], how='inner')
+        import math
+        result['idf'] = result.apply(lambda x: math.log(x['N']/x['df_t']), axis=1)
+        result['tf_idf'] = result['tf'] * result['idf']
+        # print(result[result['id'] == 803616])
+        # print(result)
+        # print (df[df['id'] == 803616][['id','term']])
+        # print (d[d['id'] == 803616])
+        result.to_csv(path + 'tf_idf_checked.csv')
+        break
+
+
