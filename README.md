@@ -21,15 +21,15 @@ Be able to 50% correctly map ICD-10.
 ## Materials and methods
 ### Meterials
 5 csv files that were used to create the algorithm are as follows:
-#### discharge_summary.csv
+#### 1. discharge_summary.csv
 This file is the collection of physicians' discharge dischrage summary in Maharaj Nakorn Chiang Mai Hospital. The file contains discharge summary notes, icd-10 codes and terms that were made by physicians. 
-#### abnormality.csv
+#### 2. abnormality.csv
 This file was acquired from [...]. It contains a group of abnormality terms in medicine that are already matched to concept_id codes.
-#### disorder.csv
+#### 3. disorder.csv
 This file was acquired from [...]. It contains a group of disorder terms in medicine that are already matched to concept_id codes.
-#### finding.csv
+#### 4. finding.csv
 This file was acquired from [...]. It contains a group of finding terms in medicine that are already matched to concept_id codes.
-#### procedure.csv
+#### 5. procedure.csv
 This file was acquired from [...]. It contains a group of procedures terms in medicine that are already matched to concept_id codes.
 
 ### Methods
