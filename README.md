@@ -11,7 +11,7 @@
 ### Problem statement
 Icd-10 stands for International Statistical Classification of Diseases and Related Health Problems which is a medical classification documented by World Health Organization (WHO). The list contains an international identification numbers for diagnosis, signs and symptoms, abnormla finding, procedures, etc. Physicians have to document ICD-10 numbers and its terms in discharge summary note when patients are discharged from hospital. Documenting icd-10 is a repetitive task and time-consuming for physicians. As a result, having an algorithm that could automatically match physician's terms into icd-10 terms, would save their time resuorces and focus as well as avoiding documentation errors from human. 
 ### Prior work
--SNOMED
+-SNOMED, excel files 
 ## Objective
 To match string presenting in clinical document with SNOMED-CT to map ICD-10.
 
@@ -19,12 +19,28 @@ To match string presenting in clinical document with SNOMED-CT to map ICD-10.
 Be able to 50% correctly map ICD-10.
 
 ## Materials and methods
+In order to correctly match physician's notes in discharge summary to icd-10 terms, the algorithm must do the following 3 steps:
+1. Cleaning data
+2. Match discharge summary notes to SNOMED 
+3. Match SNOMED codes to icd-10 codes
+### Cleaning data
+def clean_data() was used to clear strings that are not important and meaningless in physicians' discharge summary notes. The function contains the following codes: 
 
+  discharge_summary = pd.read_csv(path+'discharge_summary.csv',index_col=0)
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('&lt;br/&gt;',' ',str(x).lower()))
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('&gt;',' ',str(x).lower()))
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('<.*?>',' ',str(x).lower()))
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('[^a-zA-Z0-9 ]','',str(x).lower()))
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
+	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('  +',' ',str(x).lower()))
+	discharge_summary.to_csv(path+'snomed/discharge_clean.csv')
+
+The desired dataset must only be English. Strings that do not serve any meanings such as '&lt;br/&gt;' and '&gt;' were excluded from the dataset. 
 ### Target group
 
 ### Dataset
 
-### How to use SSH server
+### Notes on How to use SSH server
 #### Putty
 1. Enter IP address in "xxx.xxx.xxx.xxx" host name (or IP address) -> click "open"
 2. login as: (enter username)
