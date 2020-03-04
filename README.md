@@ -7,19 +7,19 @@
 ## Duration
 1 month (February 2020)
 
-## Introduction 
-
+## Introduction
 ### Problem statement
-
+Icd-10 stands for International Statistical Classification of Diseases and Related Health Problems which is a medical classification documented by World Health Organization (WHO). The list contains an international identification numbers for diagnosis, signs and symptoms, abnormla finding, procedures, etc. Physicians have to document ICD-10 numbers and its terms in discharge summary note when patients are discharged from hospital. Documenting icd-10 is a repetitive task and time-consuming for physicians. As a result, having an algorithm that could automatically match physician's terms into icd-10 terms, would save their time resuorces and focus as well as avoiding documentation errors from human. 
 ### Prior work
-
+-SNOMED
 ## Objective
-1. to match string presenting in clinical document with SNOMED-CT to map ICD-10.
+To match string presenting in clinical document with SNOMED-CT to map ICD-10.
 
 ## Aim
-1. Be able to 50% correctly map ICD-10.
+Be able to 50% correctly map ICD-10.
 
 ## Materials and methods
+
 ### Target group
 
 ### Dataset
@@ -50,7 +50,7 @@
 4. git add . = add all new updates to local git (similarly to 'stages')
 5. git commit -m "(comment here)" = comment what you update to local git
 6. git push = push code from local git to server git (! always pull the lastest update prior to git push) -> (enter username + password)
-### Download file from server on your computer command prompt 
+#### Download file from server on your computer command prompt 
 C:\Users\ASUS>scp root@xxx.xxx.xxx.xxx:~/icd10/secret/data/result2.csv C:\Users\ASUS\Documents\GitHub\secret\data\result2.csv
 
 ### Results
