@@ -35,8 +35,8 @@ This file was acquired from [...]. It contains a group of procedures terms in me
 ### Methods
 In order to correctly match physician's notes in discharge summary to icd-10 terms, the algorithm must do the following 3 steps:
 1. Cleaning data
-2. Matching discharge summary to SNOMED_concept_id codes
-3. Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
+2. Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
+3. Improve matching accuracy by apply TF-IDF concepts
 #### Cleaning data
 def clean_data() and def start_data() was used to clear strings that are not important and meaningless in physicians' discharge summary notes. The function contains the following codes: 
 
@@ -60,9 +60,94 @@ def clean_data():
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('  +',' ',str(x).lower()))
 	discharge_summary.to_csv(path+'snomed/discharge_clean.csv')
-#### Matching discharge summary to SNOMED_concept_id codes
-
 #### Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
+In order to determine which terms are similar, the Levenshtein Distance concept was used. Levenshtein Distance was created by Vladimir Levenshtein in 1965. It is a formula used to measure how apart are two sequences of words by finding the minimum number of operations needed to change a word sequence into the other using insertions, deletions or substitutions. For example the Levenshtein distance between "MOCHA" and "MOCHI" is 1 (1 substitution, "A" to "I") or the Levenshtein distance between "LATTE" and "MANTLE" is 3. (2 insertions, add "M" and "N", and 1 deletion, "T") The greater the distance, the more different two words are. 
+
+Fuzzy wuzzy package uses the concept of Levenshtein Distance by computing the standard Levenshtein distance similarity ratio between two sequences so that outcome yields in percentage. The higher the percent is, the more similar two sequences are. As a result, fuzz.token_set_ratio was applied. This function computes the standard Levenshtein distance similarity ratio by using 2 more conditions. One is to XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+by using fuzz.set_token_ratio function as following codes: 
+
+##### in compare_text.py 
+
+from itertools import count
+
+from fuzzywuzzy import fuzz
+import pandas as pd
+import numpy as np
+import re
+import textdistance
+
+path = "../secret/data/"
+
+
+def text_similarity(x, y):
+    return fuzz.token_set_ratio(x.lower(), y.lower())
+
+def compare(text, compared_data):
+    compared_data['similarity'] = compared_data['term'].apply(lambda x: text_similarity(str(text), str(x)))
+    compared_data = compared_data.drop_duplicates()
+    compared_data = compared_data.sort_values(by='similarity', ascending=False)
+    # compared_data = compared_data[compared_data['similarity']>80]
+    # print(compared_data)
+    return compared_data
+    
+##### in main.py 
+
+def convert(x):
+	x = str(x).split('.')
+	if len(x) > 1:
+		return x[0]+x[1][:1]
+	else:
+		return x[0]
+
+def get_related_icd10(text,compared_data,type,icd10_dict,icd10_name_dict):
+	data = compare(text,compared_data.copy())
+	data['icd10'] = data['concept_id'].apply(lambda x: icd10_dict[x] if x in icd10_dict else '')
+	data['icd10_name'] = data['icd10'].apply(lambda x: icd10_name_dict[convert(x)] if convert(x) in icd10_name_dict else '')
+	data = data[(data['icd10']!='') & (data['icd10'].notnull())]
+	data['type'] = type
+	return data
+
+def map_icd10():
+	discharge_summary = pd.read_csv(path+'snomed/discharge_clean.csv',index_col=0)
+	icd10 = pd.read_csv(path+'snomed/conceptid_to_icd10.csv',index_col=0)
+	icd10_dict = dict(zip(icd10.concept_id, icd10.icd10))
+	icd10_name = icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
+	icd10_name_dict = dict(zip(icd10_name.code, icd10_name.cdesc))
+	finding = pd.read_csv(path+'snomed/finding.csv',index_col=0)
+	disorder = pd.read_csv(path+'snomed/disorder.csv',index_col=0)
+	abnormality = pd.read_csv(path+'snomed/abnormality.csv',index_col=0)
+	procedure = pd.read_csv(path+'snomed/procedure.csv',index_col=0)
+
+	p = path+'result_100.csv'
+	file = Path(p)
+	if file.is_file():
+		os.remove(p)
+
+	for index,row in discharge_summary.iterrows():
+		print(row['sum_note'])
+		df = []
+		df.append(get_related_icd10(row['sum_note'],finding.copy(),'finding',icd10_dict,icd10_name_dict))
+		df.append(get_related_icd10(row['sum_note'],disorder.copy(),'disorder',icd10_dict,icd10_name_dict))
+		df.append(get_related_icd10(row['sum_note'],abnormality.copy(),'abnormality',icd10_dict,icd10_name_dict))
+		df.append(get_related_icd10(row['sum_note'],procedure.copy(),'procedure',icd10_dict,icd10_name_dict))
+		result = pd.concat(df)
+		result['sum_note'] = row['sum_note']
+		result = result.sort_values(by='similarity', ascending=False)
+		if len(result)>0:
+			#print(row['sum_note'])
+			result = result.head(100)
+			result['id'] = index
+			print(result[['id','term','icd10_name','type','similarity']])
+			file = Path(p)
+			if file.is_file():
+				with open(p, 'a') as f:
+					result.to_csv(f, header=False)
+			else:
+				result.to_csv(p)
+		else:
+			print('not found')
+#### Improve matching accuracy by apply TF-IDF concepts
 
 ### Target group
 
