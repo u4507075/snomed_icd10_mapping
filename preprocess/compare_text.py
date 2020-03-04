@@ -51,11 +51,11 @@ def percent_n_score(row, subject):
 
 
 def algorithm_validity():
-    subject = pd.read_csv(path + 'result_100.csv', index_col=0)
+    subject = pd.read_csv(path + 'tf_idf_checked.csv', index_col=0)
     standard_result = pd.read_csv(path + 'discharge_summary.csv')
     subject['icd10'] = subject['icd10'].apply(lambda x: convert(x))
-    standard_result['cal_validity_percent'] = standard_result.apply(lambda x: percent_n_score(x, subject), axis=1)
-    standard_result.to_csv(path + 'result_100_validity_checked.csv')
+    subject['cal_validity_percent'] = subject.apply(lambda x: percent_n_score(x, subject), axis=1)
+    standard_result.to_csv(path + 'tf_idf_checked_algo_valid.csv')
 
 
 def tf_idf():
@@ -77,5 +77,6 @@ def tf_idf():
         # print (d[d['id'] == 803616])
         result.to_csv(path + 'tf_idf_checked.csv')
         break
+
 
 
