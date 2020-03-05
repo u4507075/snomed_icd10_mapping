@@ -11,7 +11,7 @@
 ### Problem statement
 Icd-10 stands for International Statistical Classification of Diseases and Related Health Problems which is a medical classification documented by World Health Organization (WHO). The list contains an international identification numbers for diagnosis, signs and symptoms, abnormla finding, procedures, etc. Physicians have to document ICD-10 numbers and its terms in discharge summary note when patients are discharged from hospital. Documenting icd-10 is a repetitive task and time-consuming for physicians. As a result, having an algorithm that could automatically match physician's terms into icd-10 terms, would save their time resuorces and focus as well as avoiding documentation errors from human. 
 ### Prior work
--SNOMED, excel files 
+-SNOMED, csv files 
 ## Objective
 To match string presenting in clinical document with SNOMED-CT to map ICD-10.
 
@@ -20,7 +20,7 @@ Be able to 50% correctly map ICD-10.
 
 ## Materials and methods
 ### Meterials
-5 csv files that were used to create the algorithm are as follows:
+5 csv files that were used to create the algorithm as following:
 #### 1. discharge_summary.csv
 This file is the collection of physicians' discharge dischrage summary in Maharaj Nakorn Chiang Mai Hospital. The file contains discharge summary notes, icd-10 codes and terms that were made by physicians. 
 #### 2. abnormality.csv
@@ -37,8 +37,10 @@ In order to correctly match physician's notes in discharge summary to icd-10 ter
 1. Cleaning data
 2. Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
 3. Improve matching accuracy by apply TF-IDF concepts
-#### Cleaning data
-def clean_data() and def start_data() was used to clear strings that are not important and meaningless in physicians' discharge summary notes. The function contains the following codes: 
+#### 1. Cleaning data
+def clean_data() and def start_data() was used to clear strings that are not important and meaningless in physicians' discharge summary notes. In this dataset strings that are '&lt;br/&gt', '&gt;', and '<.*?>'  are considered not important
+
+The function contains the following codes: 
 
 stop_words = stopwords.words('english')
 path = "../secret/data/"
@@ -60,7 +62,7 @@ def clean_data():
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('  +',' ',str(x).lower()))
 	discharge_summary.to_csv(path+'snomed/discharge_clean.csv')
-#### Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
+#### 2. Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
 In order to determine which terms are similar, the Levenshtein Distance concept was used. Levenshtein Distance was created by Vladimir Levenshtein in 1965. It is a formula used to measure how apart are two sequences of words by finding the minimum number of operations needed to change a word sequence into the other using insertions, deletions or substitutions. For example the Levenshtein distance between "MOCHA" and "MOCHI" is 1 (1 substitution, "A" to "I") or the Levenshtein distance between "LATTE" and "MANTLE" is 3. (2 insertions, add "M" and "N", and 1 deletion, "T") The greater the distance, the more different two words are. 
 
 Fuzzy wuzzy package uses the concept of Levenshtein Distance by computing the standard Levenshtein distance similarity ratio between two sequences so that outcome yields in percentage. The higher the percent is, the more similar two sequences are. As a result, fuzz.token_set_ratio was applied. This function computes the standard Levenshtein distance similarity ratio by using 2 more conditions. One is to XXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -148,10 +150,6 @@ def map_icd10():
 		else:
 			print('not found')
 #### Improve matching accuracy by apply TF-IDF concepts
-
-### Target group
-
-### Dataset
 
 ### Notes on How to use SSH server
 #### Putty
