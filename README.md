@@ -41,7 +41,7 @@ In order to correctly match physician's notes in discharge summary to icd-10 ter
 def clean_data() and def start_data() was used to clear strings that are not important and meaningless in physicians' discharge summary notes. In this dataset strings that are '&lt;br/&gt', '&gt;', and '<.*?>'  are considered not important
 
 The function contains the following codes: 
-
+```
 stop_words = stopwords.words('english')
 path = "../secret/data/"
 
@@ -62,6 +62,7 @@ def clean_data():
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
 	discharge_summary['sum_note'] = discharge_summary['sum_note'].apply(lambda x: re.sub('  +',' ',str(x).lower()))
 	discharge_summary.to_csv(path+'snomed/discharge_clean.csv')
+```
 #### 2. Matching terms in discharge summary to icd-10 codes & terms by using SNOMED_concept_id codes
 In order to determine which terms are similar, the Levenshtein Distance concept was used. Levenshtein Distance was created by Vladimir Levenshtein in 1965. It is a formula used to measure how apart are two sequences of words by finding the minimum number of operations needed to change a word sequence into the other using insertions, deletions or substitutions. For example the Levenshtein distance between "MOCHA" and "MOCHI" is 1 (1 substitution, "A" to "I") or the Levenshtein distance between "LATTE" and "MANTLE" is 3. (2 insertions, add "M" and "N", and 1 deletion, "T") The greater the distance, the more different two words are. 
 
