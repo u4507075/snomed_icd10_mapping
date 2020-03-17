@@ -31,6 +31,8 @@ This file was acquired from [...]. It contains a group of disorder terms in medi
 This file was acquired from [...]. It contains a group of finding terms in medicine that are already matched to concept_id codes.
 #### 5. procedure.csv
 This file was acquired from [...]. It contains a group of procedures terms in medicine that are already matched to concept_id codes.
+#### 6. conceptid_to_icd10.csv
+This file contains concept_id correctly matched with icd10 codes
 
 ### Methods
 In order to correctly match physician's notes in discharge summary to icd-10 terms, the algorithm must do the following 3 steps:
