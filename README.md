@@ -69,7 +69,7 @@ In order to determine which terms are similar, the Levenshtein Distance concept 
 Fuzzy wuzzy package uses the concept of Levenshtein Distance by computing the standard Levenshtein distance similarity ratio between two sequences so that outcome yields in percentage. The higher the percent is, the more similar two sequences are. As a result, fuzz.token_set_ratio was applied. This function computes the standard Levenshtein distance similarity ratio by using 2 more conditions. One is to XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 by using fuzz.set_token_ratio function as following codes: 
-
+```
 ##### in compare_text.py 
 
 from itertools import count
@@ -150,6 +150,7 @@ def map_icd10():
 				result.to_csv(p)
 		else:
 			print('not found')
+```
 #### Improve matching accuracy by apply TF-IDF concepts
 
 ### Notes on How to use SSH server
@@ -182,7 +183,38 @@ def map_icd10():
 C:\Users\ASUS>scp root@xxx.xxx.xxx.xxx:~/icd10/secret/data/result2.csv C:\Users\ASUS\Documents\GitHub\secret\data\result2.csv
 
 ### Results
+500 discharge summary were used to run the algorithm. The algorithm could 100% correctly match 149 samples icd-10 terms compared to the physician's diagnosis. There were 1 80%-correctly-matched, 3 75%-correctly-matched, 8 66.67%-correctly-matched, 2 60%-correctly-matched, 86 50%-correctly-matched, 1 44.44%-correctly-matched, 3 42.86%-correctly-matched, 5 40%-correctly-matched, 2 37.5%-correctly-matched, 59 33.33%-correctly-matched, 2 30%-correctly-matched, 4 28.57-correctly-matched, 39 25%-correctly-matched, 1 23.08%-correctly-matched, 1 22.22%-correctly-matched, 29 20%-correctly-matched, 6 18.18%-correctly-matched, 16 16.67%-correctly-matched, 2 15.38%-correctly-matched, 13 14.29%-correctly-matched, 8 12.5%-correctly-matched, 4 11.11%-correctly-matched, 3 10%-correctly-matched, 1 9.09%-correctly-matched, 1 7.69%-correctly-matched
 
+In conclusion, there 249 discharge summaries from 500 samples that the algorithm could 50% or more correctly match to icd-10 terms
 ### Discussion
+String matching by using the concept of Levenshtein Distance could correctly match icd-10 terms from physician's discharge summary at 49.8% accuracy. The algorithm could be improved by using the concept of Term frequency–inverse document frequency or TF-IDF which is a way to communicate computers how important a word in a document is. In this project, we use calculate TF/IDF by having TF divided by IDF. 
 
+TF or term frequency were calculated by the number of a term in a document divided by total amount of terms in that document. For example:
+Given TF = f(term,document) and a document = "The sky is blue. The sky is beautiful", the values of TF for each term in these 2 documents are as follows:
+
+TF1 = f("The",document1) = f(2,8) = 2/8 = 0.25
+TF2 = f("sky",document1) = f(2,8) = 2/8 = 0.25
+TF3 = f("is",document1) = f(2,8) = 2/8 = 0.25
+TF4 = f("blue",document1) = f(1,8) = 2/8 = 0.125
+TF5 = f("beautiful",document1) = f(2,8) = 2/8 = 0.125
+
+The greater TF is, the more frequent the term appears in a document
+
+IDF or inverse-document frequency is used to measure importance of a term in all documents. In this project, we calculate IDF by Total documents (N) divided by Total documents that the term appears (df(t))
+
+So when a term in a discharge summary is likely to be the definitive diagnosis, the term should have high TF and low IDF.
+
+By applying all of these concepts the algorithm should be able to correctly match physician's discharge summary notes to icd-10 terms if the definitive diagnosis was noted. 
+
+For example, 
 ### Limitations
+#### The algorithms are not able to comprehend abbrevations
+For example, if the physician noted C/S in discharge summary instead of Cesarean section, the algorithm will not match cesarean section to icd-10 term. 
+#### The algorithm do not understand tenses 
+The algorithms are not able to distinguish past, present and future noted in discharge summary. If a patient had a history of ruptured appendicitis 10 years prior and his present disease is STEMI this time is dyspnea on exertion, the algorithm would comprehend ruptured appendicitis and STEMI as present problems which will lead to icd-10 mismatching. 
+#### Word sequence were not counted for icd-10 matching in this algorithm 
+The algorithm do not weigh the importance of term sequences. If a term was placed in the beginning of paragraph could match athe last term in the document meaningfully, the algorithms willcombine those terms and find a matched icd-10.
+
+For example, given a document of a patient diagnosed with ruptured ectopic pregnancy: "PE: normal consciousness, no pale conjunctive, anicteric sclera,..., definitive diagnosis: ruptured ectopic pregnancy" The algorithms could combine 'normal' and 'pregnancy' to find an icd-10 match like "normal pregnancy" which is an incorrect principles diagnosis
+#### The algorithms do not understand negation phrases
+Negative findings are usually reported in physician's discharge summary notes such as no palpaple mass, no pale conjunctiva, no jaundice, no hepatosplenomagaly. Our algorithms do not yet understand negation phrases. It will comprehend "no palpable mass" as "palpable mass"
