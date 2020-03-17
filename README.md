@@ -216,5 +216,5 @@ The algorithms are not able to distinguish past, present and future noted in dis
 The algorithm do not weigh the importance of term sequences. If a term was placed in the beginning of paragraph could match athe last term in the document meaningfully, the algorithms willcombine those terms and find a matched icd-10.
 
 For example, given a document of a patient diagnosed with ruptured ectopic pregnancy: "PE: normal consciousness, no pale conjunctive, anicteric sclera,..., definitive diagnosis: ruptured ectopic pregnancy" The algorithms could combine 'normal' and 'pregnancy' to find an icd-10 match like "normal pregnancy" which is an incorrect principles diagnosis
-#### The algorithms do not understand negation phrases
-Negative findings are usually reported in physician's discharge summary notes such as no palpaple mass, no pale conjunctiva, no jaundice, no hepatosplenomagaly. Our algorithms do not yet understand negation phrases. It will comprehend "no palpable mass" as "palpable mass"
+#### The algorithms do not understand negation
+Negative findings are commonly reported in physician's discharge summary notes such as no palpaple mass, no pale conjunctiva, no jaundice, no hepatosplenomagaly. Our algorithms do not yet understand negation phrases. It will comprehend "no palpable mass" as "palpable mass"
