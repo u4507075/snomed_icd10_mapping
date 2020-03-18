@@ -6,6 +6,9 @@ from preprocess.compare_text import compare
 from pathlib import Path
 import os
 from nltk.corpus import stopwords
+from fuzzywuzzy import process
+import itertools
+from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
 
@@ -94,5 +97,49 @@ def map_icd10():
 #clean_data()
 #map_icd10()
 #tf_idf()
-algorithm_validity()
+#algorithm_validity()
 
+df = pd.read_csv(path+'result_100.csv', index_col= 0)
+#print (df)
+data = df[['term', 'sum_note']]
+
+for x,y in data.iterrows():
+	sn = str(y['sum_note'])
+	tm = str(y['term'])
+	tm = tm.lower()
+	sn = sn.split()
+	tm = tm.split()
+
+
+	print(tm)
+	print(sn)
+	tp = []
+	for t in tm:
+		print(t)
+		result = process.extract(t,sn)
+		filter_result = [t for t in result if t[1] > 80]
+		pos = []
+		for w in filter_result:
+			#print(w)
+			values = np.array(sn)
+			ii = np.where(values == w[0])
+			#print(ii)
+			#print(list(ii))
+			for l in list(ii):
+				pos.append(l.tolist())
+		#print(pos)
+		flat_pos = [y for x in pos for y in x]
+		#print(flat_pos)
+		flat_pos = np.unique(np.array(flat_pos)).tolist()
+		print (flat_pos)
+		tp.append(flat_pos)
+	print (tp)
+	sumst = []
+	for x in itertools.product(*tp):
+		#print(list(x))
+		finalist = list(itertools.combinations(x, 2))
+		print(finalist)
+		subtract = [abs(i[0] - i[1]) for i in finalist]
+		print(subtract)
+		sumst.append(sum(subtract))
+	print (sumst)
