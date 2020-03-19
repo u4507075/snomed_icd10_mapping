@@ -99,47 +99,79 @@ def map_icd10():
 #tf_idf()
 #algorithm_validity()
 
-df = pd.read_csv(path+'result_100.csv', index_col= 0)
-#print (df)
-data = df[['term', 'sum_note']]
+def distance():
+	df = pd.read_csv(path+'result_100.csv', index_col= 0)
+	#print (df)
+	data = df[['term', 'sum_note']]
+	data = data.head(5000)
+	data = data.reset_index()
+	data['min_distance'] = 0
 
-for x,y in data.iterrows():
-	sn = str(y['sum_note'])
-	tm = str(y['term'])
-	tm = tm.lower()
-	sn = sn.split()
-	tm = tm.split()
+	for index,y in data.iterrows():
+		sn = str(y['sum_note'])
+		tm = str(y['term'])
+		tm = tm.lower()
+		sn = sn.split()
+		tm = tm.split()
 
 
-	print(tm)
-	print(sn)
-	tp = []
-	for t in tm:
-		print(t)
-		result = process.extract(t,sn)
-		filter_result = [t for t in result if t[1] > 80]
-		pos = []
-		for w in filter_result:
-			#print(w)
-			values = np.array(sn)
-			ii = np.where(values == w[0])
-			#print(ii)
-			#print(list(ii))
-			for l in list(ii):
-				pos.append(l.tolist())
-		#print(pos)
-		flat_pos = [y for x in pos for y in x]
-		#print(flat_pos)
-		flat_pos = np.unique(np.array(flat_pos)).tolist()
-		print (flat_pos)
-		tp.append(flat_pos)
-	print (tp)
-	sumst = []
-	for x in itertools.product(*tp):
-		#print(list(x))
-		finalist = list(itertools.combinations(x, 2))
-		print(finalist)
-		subtract = [abs(i[0] - i[1]) for i in finalist]
-		print(subtract)
-		sumst.append(sum(subtract))
-	print (sumst)
+		#print(tm)
+		#print(sn)
+		tp = []
+		for t in tm:
+			#print(t)
+			result = process.extract(t,sn)
+			#print(result)
+			filter_result = [t for t in result if t[1] > 80]
+			#print(filter_result)
+			pos = []
+			for w in filter_result:
+				#print(w)
+				values = np.array(sn)
+				ii = np.where(values == w[0])
+				#print(ii)
+				#print(list(ii))
+				for l in list(ii):
+					pos.append(l.tolist())
+			#print(pos)
+			flat_pos = [y for x in pos for y in x]
+			#print(flat_pos)
+			flat_pos = np.unique(np.array(flat_pos)).tolist()
+			#print (flat_pos)
+			tp.append(flat_pos)
+		#print (tp)
+		sumst = []
+		if len(tp) > 1:
+			for x in itertools.product(*tp):
+				#print(list(x))
+				finalist = list(itertools.combinations(x, 2))
+				#print(finalist)
+				subtract = [abs(i[0] - i[1]) for i in finalist]
+				#print(subtract)
+				sumst.append(sum(subtract))
+		elif len(tp) == 1:
+			finalist = list(itertools.combinations(tp[0], 2))
+			# print(finalist)
+			subtract = [abs(i[0] - i[1]) for i in finalist]
+			# print(subtract)
+			sumst.append(sum(subtract))
+
+		min_distance = 0
+		if len(sumst)>0:
+			min_distance = min(sumst)
+			#print(min(sumst))
+		data.at[index, 'min_distance'] = min_distance
+		if index == 238:
+			print (tm)
+			print(sumst)
+			print (min_distance)
+			print(data[data.index == 238])
+
+
+
+		#return min(sumst)
+	print(data[data.index==238])
+	data.to_csv(path+'distance.csv')
+
+distance()
+
