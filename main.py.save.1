@@ -1,4 +1,4 @@
-# import libraries
+import libraries
 import numpy as np
 import pandas as pd
 import re
@@ -6,8 +6,6 @@ from preprocess.compare_text import compare
 from pathlib import Path
 import os
 from nltk.corpus import stopwords
-from preprocess.compare_text import algorithm_validity
-from preprocess.compare_text import tf_idf
 
 # You will have to download the set of stop words the first time
 # import nltk
@@ -18,7 +16,7 @@ stop_words = stopwords.words('english')
 path = "../secret/data/"
 
 # Hello world
-def start_data():
+def clean_data():
 	# start your code here
 	discharge_summary = pd.read_csv(path+'discharge_summary.csv',index_col=0)
 	# discharge_summary = discharge_summary.head(10)
@@ -62,7 +60,7 @@ def map_icd10():
 	abnormality = pd.read_csv(path+'snomed/abnormality.csv',index_col=0)
 	procedure = pd.read_csv(path+'snomed/procedure.csv',index_col=0)
 
-	p = path+'result_100.csv'
+	p = path+'result2.csv'
 	file = Path(p)
 	if file.is_file():
 		os.remove(p)
@@ -79,9 +77,8 @@ def map_icd10():
 		result = result.sort_values(by='similarity', ascending=False)
 		if len(result)>0:
 			#print(row['sum_note'])
-			result = result.head(100)
-			result['id'] = index
-			print(result[['id','term','icd10_name','type','similarity']])
+			result = result.head(20)
+			print(result[['term','icd10_name','type','similarity']])
 			file = Path(p)
 			if file.is_file():
 				with open(p, 'a') as f:
@@ -92,7 +89,4 @@ def map_icd10():
 			print('not found')
 
 #clean_data()
-#map_icd10()
-#tf_idf()
-algorithm_validity()
-
+map_icd10()
