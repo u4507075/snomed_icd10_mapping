@@ -8,6 +8,7 @@ import os
 from nltk.corpus import stopwords
 from fuzzywuzzy import process
 import itertools
+import random
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
@@ -102,10 +103,11 @@ def map_icd10():
 def distance():
 	df = pd.read_csv(path+'result_100.csv', index_col= 0)
 	#print (df)
-	data = df[['term', 'sum_note']]
-	data = data.head(5000)
+	data = df[['id','term', 'sum_note', 'icd10', 'icd10_name']]
+	data = data.head(10000)
 	data = data.reset_index()
 	data['min_distance'] = 0
+	data['dscaled'] = 10
 
 	for index,y in data.iterrows():
 		sn = str(y['sum_note'])
@@ -161,17 +163,90 @@ def distance():
 			min_distance = min(sumst)
 			#print(min(sumst))
 		data.at[index, 'min_distance'] = min_distance
-		if index == 238:
+		if len(tm) > 1:
+			data.at[index, 'dscaled'] = min_distance/len(tm)
+		if index == 1062:
 			print (tm)
 			print(sumst)
 			print (min_distance)
-			print(data[data.index == 238])
+			print(data[data.index == 1062])
 
 
 
 		#return min(sumst)
-	print(data[data.index==238])
+	print(data[data.index==1062])
 	data.to_csv(path+'distance.csv')
 
-distance()
+#distance()
+def save_file(df,p):
+	file = Path(p)
+	if file.is_file():
+		with open(p, 'a', encoding="utf-8") as f:
+			df.to_csv(f, header=False)
+	else:
+		df.to_csv(p)
+def remove_file(p):
+	file = Path(p)
+	if file.is_file():
+		os.remove(p)
+def machinelearn():
+	df = pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0)
+	#print (df)
+	data = df[['sum_note','dx1_code']]
+	#data['icd10'] = data['icd10'].apply(lambda x: convert(x))
+	#data = data.head(10)
+	data = data.reset_index()
+	remove_file(path+'bag.csv')
+	for index, y in data.iterrows():
+		sn = str(y['sum_note'])
+		sn = sn.split(' ')
+		dx = str(y['dx1_code'])
+		for j in range (3):
+			sn1 = [sn[i:i+(j+1)] for i in range(len(sn) - (j+1))]
+			hs = [' '.join(k) for k in sn1]
+			kw = [[w,dx] for w in hs]
+			bagframe = pd.DataFrame(kw, columns = ['keywords', 'icd10'])
+			print (bagframe)
+			save_file(bagframe, path+'bag.csv')
+	df = pd.read_csv(path+'bag.csv', index_col = 0)
+	df.to_csv(path+'bag.csv')
+def get_row(col,val):
+	dfs = []
+	for d in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 10000):
+		d = d[d[col] == val]
+		dfs.append(d)
+	x = pd.concat(dfs).sample()
+	if col == 'keywords':
+		return [[x['keywords'].iloc[0], x['keywords'].iloc[0]], [x['icd10'].iloc[0], x['keywords'].iloc[0]]], 'icd10', x['icd10'].iloc[0]
+	else:
+		return [[x['icd10'].iloc[0], x['icd10'].iloc[0]], [x['keywords'].iloc[0], x['icd10'].iloc[0]]], 'keywords', x['keywords'].iloc[0]
+#machinelearn()
+#n = 3944
+#for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 10000):
+#	n = n+1
+#print (n)
+data = []
+n = 0
+#i = random.randrange(0, 3945, 1)
+i = 0
+row = None
+for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 10000):
+	if n == i:
+		row = df.sample()
+		break
+	n = n + 1
+data.append([row["keywords"].iloc[0], row["keywords"].iloc[0]])
+data.append([row["icd10"].iloc[0], row["keywords"].iloc[0]])
+print (data)
+#row2 = get_row('icd10', row["icd10"].iloc[0])
+
+col = 'icd10'
+val = row["icd10"].iloc[0]
+row = None
+for x in range(10):
+	row, col, val = get_row(col,val)
+	data.append(row)
+	print(data)
+
+
 
