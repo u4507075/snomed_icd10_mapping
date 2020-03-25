@@ -8,6 +8,8 @@ import os
 from nltk.corpus import stopwords
 from fuzzywuzzy import process
 import itertools
+from os import listdir
+from os.path import isfile, join
 import random
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
@@ -250,21 +252,46 @@ data = []
 #	print(data)
 
 
+def file_assign():
+	filelist = [ f for f in os.listdir(path+'keywords/') if f.endswith(".csv") ]
+	for f in filelist:
+		os.remove(os.path.join(path+'keywords/', f))
+	filelist = [ f for f in os.listdir(path+'icd10/') if f.endswith(".csv") ]
+	for f in filelist:
+		os.remove(os.path.join(path+'icd10/', f))
+	for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 1):
+		k = 'keyword_'+str(df['keywords'].iloc[0])
+		i = 'icd10_'+str(df['icd10'].iloc[0])
+		print (df)
+		save_file(df, path+'keywords/'+str(k)+'.csv')
+		save_file(df, path+'icd10/'+str(i)+'.csv')
+def get_row2(col,x):
+	if col == 'keywords':
+		return [[x['keywords'].iloc[0], x['keywords'].iloc[0]], [x['icd10'].iloc[0], x['keywords'].iloc[0]]], 'icd10', x['icd10'].iloc[0]
+	else:
+		return [[x['icd10'].iloc[0], x['icd10'].iloc[0]], [x['keywords'].iloc[0], x['icd10'].iloc[0]]], 'keywords', x['keywords'].iloc[0]
 
-filelist = [ f for f in os.listdir(path+'keywords/') if f.endswith(".csv") ]
-for f in filelist:
-    os.remove(os.path.join(path+'keywords/', f))
-filelist = [ f for f in os.listdir(path+'icd10/') if f.endswith(".csv") ]
-for f in filelist:
-    os.remove(os.path.join(path+'icd10/', f))
-for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 1):
-	k = 'keyword_'+str(df['keywords'].iloc[0])
-	i = 'icd10_'+str(df['icd10'].iloc[0])
-	print (df)
-	save_file(df, path+'keywords/'+str(k)+'.csv')
-	save_file(df, path+'icd10/'+str(i)+'.csv')
+mypath = path+'icd10/'
+list_icd10 = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+start = random.choice(list_icd10)
+print (start)
+df = pd.read_csv(path+'icd10/'+start, index_col= 0)
+df = df.sample()
 
-
+data = []
+col = 'icd10'
+row = None
+for x in range(10):
+	row, col, valx = get_row2(col,df)
+	data = data + row
+	print(data)
+	print (col)
+	if col == 'keywords':
+		df = pd.read_csv(path+'keywords/keyword_'+valx+'.csv')
+		df = df.sample()
+	else:
+		df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
+		df = df.sample()
 
 
 
