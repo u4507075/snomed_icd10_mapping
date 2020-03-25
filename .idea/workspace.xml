@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42ef67c8-720f-4185-a6d7-6f61766987e1" name="Default Changelist" comment="" />
+    <list default="true" id="42ef67c8-720f-4185-a6d7-6f61766987e1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +23,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -172,17 +175,18 @@
       <screen x="0" y="0" width="1280" height="720" />
     </state>
     <state width="1259" height="274" key="GridCell.Tab.1.right/0.0.1280.720@0.0.1280.720" timestamp="1582559758417" />
-    <state x="170" y="5" key="SettingsEditor" timestamp="1584413852193">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="170" y="5" key="SettingsEditor" timestamp="1585071684673">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="142" y="4" key="SettingsEditor/0.0.1280.720@0.0.1280.720" timestamp="1581598328635" />
     <state x="170" y="5" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1584413852193" />
-    <state x="404" y="223" key="com.intellij.ide.util.TipDialog" timestamp="1584929148031">
+    <state x="170" y="5" key="SettingsEditor/0.0.1536.864@0.0.1536.864" timestamp="1585071684673" />
+    <state x="404" y="223" key="com.intellij.ide.util.TipDialog" timestamp="1585102673654">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="337" y="186" key="com.intellij.ide.util.TipDialog/0.0.1280.720@0.0.1280.720" timestamp="1583321466662" />
     <state x="404" y="213" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1584688414269" />
-    <state x="404" y="223" key="com.intellij.ide.util.TipDialog/0.0.1536.864@0.0.1536.864" timestamp="1584929148031" />
+    <state x="404" y="223" key="com.intellij.ide.util.TipDialog/0.0.1536.864@0.0.1536.864" timestamp="1585102673654" />
     <state x="303" y="41" width="672" height="678" key="search.everywhere.popup" timestamp="1580738132761">
       <screen x="0" y="0" width="1280" height="720" />
     </state>

@@ -226,27 +226,45 @@ def get_row(col,val):
 #	n = n+1
 #print (n)
 data = []
-n = 0
+#n = 0
 #i = random.randrange(0, 3945, 1)
-i = 0
-row = None
-for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 10000):
-	if n == i:
-		row = df.sample()
-		break
-	n = n + 1
-data.append([row["keywords"].iloc[0], row["keywords"].iloc[0]])
-data.append([row["icd10"].iloc[0], row["keywords"].iloc[0]])
-print (data)
+#i = 0
+#row = None
+#for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 10000):
+#	#random , mai tong loop
+#	if n == i:
+#		row = df.sample()
+#		break
+#	n = n + 1
+#data.append([row["keywords"].iloc[0], row["keywords"].iloc[0]])
+#data.append([row["icd10"].iloc[0], row["keywords"].iloc[0]])
+#print (data)
 #row2 = get_row('icd10', row["icd10"].iloc[0])
 
-col = 'icd10'
-val = row["icd10"].iloc[0]
-row = None
-for x in range(10):
-	row, col, val = get_row(col,val)
-	data.append(row)
-	print(data)
+#col = 'icd10'
+#val = row["icd10"].iloc[0]
+#row = None
+#for x in range(10):
+#	row, col, val = get_row(col,val)
+#	data.append(row)
+#	print(data)
+
+
+
+filelist = [ f for f in os.listdir(path+'keywords/') if f.endswith(".csv") ]
+for f in filelist:
+    os.remove(os.path.join(path+'keywords/', f))
+filelist = [ f for f in os.listdir(path+'icd10/') if f.endswith(".csv") ]
+for f in filelist:
+    os.remove(os.path.join(path+'icd10/', f))
+for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 1):
+	k = 'keyword_'+str(df['keywords'].iloc[0])
+	i = 'icd10_'+str(df['icd10'].iloc[0])
+	print (df)
+	save_file(df, path+'keywords/'+str(k)+'.csv')
+	save_file(df, path+'icd10/'+str(i)+'.csv')
+
+
 
 
 
