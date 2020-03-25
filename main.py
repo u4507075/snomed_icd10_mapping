@@ -18,7 +18,7 @@ stop_words = stopwords.words('english')
 path = "../secret/data/"
 
 # Hello world
-def clean_data():
+def start_data():
 	# start your code here
 	discharge_summary = pd.read_csv(path+'discharge_summary.csv',index_col=0)
 	# discharge_summary = discharge_summary.head(10)
