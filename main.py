@@ -10,8 +10,8 @@ from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
 
 # You will have to download the set of stop words the first time
-# import nltk
-# nltk.download('stopwords')
+#import nltk
+#nltk.download('stopwords')
 stop_words = stopwords.words('english')
 
 # secret directory to the dataset
@@ -94,5 +94,8 @@ def map_icd10():
 #clean_data()
 #map_icd10()
 #algorithm_validity()
-tf_idf()
+#tf_idf()
 
+df = pd.read_csv(path+'result_100_validity_checked.csv',index_col=0)
+df = df.head(5000)
+print(df['cal_validity_percent'].mean())
