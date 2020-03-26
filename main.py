@@ -269,9 +269,10 @@ def file_assign():
 		save_file(df, path+'icd10/'+str(i)+'.csv')
 def get_row2(col,x):
 	if col == 'keywords':
-		return [[x['keywords'].iloc[0], x['keywords'].iloc[0]], [x['icd10'].iloc[0], x['keywords'].iloc[0]]], 'icd10', x['icd10'].iloc[0]
+		return [[str(x['keywords'].iloc[0]), str(x['keywords'].iloc[0])], [str(x['icd10'].iloc[0]), str(x['keywords'].iloc[0])]], 'icd10', x['icd10'].iloc[0]
 	else:
-		return [[x['icd10'].iloc[0], x['icd10'].iloc[0]], [x['keywords'].iloc[0], x['icd10'].iloc[0]]], 'keywords', x['keywords'].iloc[0]
+		return [[str(x['icd10'].iloc[0]), str(x['icd10'].iloc[0])], [str(x['keywords'].iloc[0]), str(x['icd10'].iloc[0])]], 'keywords', x['keywords'].iloc[0]
+
 
 def get_chain_data(n):
 	mypath = path+'icd10/'
@@ -287,28 +288,28 @@ def get_chain_data(n):
 	for x in range(n):
 		row, col, valx = get_row2(col,df)
 		data = data + row
-		print(data)
-		print (col)
+		#print(data)
+		#print (col)
 		if col == 'keywords':
 			df = pd.read_csv(path+'keywords/keyword_'+valx+'.csv')
 			df = df.sample()
 		else:
 			df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
 			df = df.sample()
+	return data
+data = get_chain_data(1000)
+print(data)
+#model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
+#model.save(path+'dc_model')
 
-df = pd.read_csv(path+'trainingset/raw/dru.csv',index_col=0)
-df = df[['drug','icd10']]
-#model = gensim.models.Word2Vec(chain(1000,df,'drug','icd10'), compute_loss = True, sg = 1)
-#model.save(path+'model')
 for i in range(100000):
-        text = chain(100,df,'drug','icd10')
-        model = gensim.models.Word2Vec.load(path + 'model')
-        model.build_vocab(text, update=True)
-        model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
-        print(model.get_latest_training_loss())
-        model.save(path+'model')
-
-data = get_chain_data(10)
+	text = get_chain_data(100)
+	print (text)
+	model = gensim.models.Word2Vec.load(path + 'dc_model')
+	model.build_vocab(text, update=True)
+	model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
+	print(model.get_latest_training_loss())
+	model.save(path+'dc_model')
 
 model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
 model.save(path+'dc_model')
@@ -321,3 +322,5 @@ for i in range(100000):
         print(model.get_latest_training_loss())
         model.save(path+'model')
 '''
+
+
