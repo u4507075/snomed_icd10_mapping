@@ -311,16 +311,5 @@ for i in range(100000):
 	print(model.get_latest_training_loss())
 	model.save(path+'dc_model')
 
-model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
-model.save(path+'dc_model')
-'''
-for i in range(100000):
-        text = chain(100,df,'drug','icd10')
-        model = gensim.models.Word2Vec.load(path + 'model')
-        model.build_vocab(text, update=True)
-        model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
-        print(model.get_latest_training_loss())
-        model.save(path+'model')
-'''
 
 
