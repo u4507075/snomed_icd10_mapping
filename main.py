@@ -16,7 +16,7 @@ import gensim
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
-
+import gensim
 # You will have to download the set of stop words the first time
 # import nltk
 # nltk.download('stopwords')
@@ -273,27 +273,28 @@ def get_row2(col,x):
 	else:
 		return [[x['icd10'].iloc[0], x['icd10'].iloc[0]], [x['keywords'].iloc[0], x['icd10'].iloc[0]]], 'keywords', x['keywords'].iloc[0]
 
-mypath = path+'icd10/'
-list_icd10 = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-start = random.choice(list_icd10)
-print (start)
-df = pd.read_csv(path+'icd10/'+start, index_col= 0)
-df = df.sample()
+def get_chain_data(n):
+	mypath = path+'icd10/'
+	list_icd10 = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+	start = random.choice(list_icd10)
+	print (start)
+	df = pd.read_csv(path+'icd10/'+start, index_col= 0)
+	df = df.sample()
 
-data = []
-col = 'icd10'
-row = None
-for x in range(10):
-	row, col, valx = get_row2(col,df)
-	data = data + row
-	print(data)
-	print (col)
-	if col == 'keywords':
-		df = pd.read_csv(path+'keywords/keyword_'+valx+'.csv')
-		df = df.sample()
-	else:
-		df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
-		df = df.sample()
+	data = []
+	col = 'icd10'
+	row = None
+	for x in range(n):
+		row, col, valx = get_row2(col,df)
+		data = data + row
+		print(data)
+		print (col)
+		if col == 'keywords':
+			df = pd.read_csv(path+'keywords/keyword_'+valx+'.csv')
+			df = df.sample()
+		else:
+			df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
+			df = df.sample()
 
 df = pd.read_csv(path+'trainingset/raw/dru.csv',index_col=0)
 df = df[['drug','icd10']]
@@ -307,4 +308,16 @@ for i in range(100000):
         print(model.get_latest_training_loss())
         model.save(path+'model')
 
+data = get_chain_data(10)
 
+model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
+model.save(path+'dc_model')
+'''
+for i in range(100000):
+        text = chain(100,df,'drug','icd10')
+        model = gensim.models.Word2Vec.load(path + 'model')
+        model.build_vocab(text, update=True)
+        model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
+        print(model.get_latest_training_loss())
+        model.save(path+'model')
+'''
