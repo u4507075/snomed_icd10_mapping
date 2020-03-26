@@ -16,7 +16,7 @@ import gensim
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
-import gensim
+
 # You will have to download the set of stop words the first time
 # import nltk
 # nltk.download('stopwords')
