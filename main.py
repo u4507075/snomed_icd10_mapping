@@ -297,8 +297,9 @@ def get_chain_data(n):
 			df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
 			df = df.sample()
 	return data
-data = get_chain_data(1000)
-print(data)
+
+#data = get_chain_data(1000)
+#print(data)
 #model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
 #model.save(path+'dc_model')
 
