@@ -11,6 +11,8 @@ import itertools
 from os import listdir
 from os.path import isfile, join
 import random
+
+import gensim
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
@@ -293,5 +295,16 @@ for x in range(10):
 		df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
 		df = df.sample()
 
+df = pd.read_csv(path+'trainingset/raw/dru.csv',index_col=0)
+df = df[['drug','icd10']]
+#model = gensim.models.Word2Vec(chain(1000,df,'drug','icd10'), compute_loss = True, sg = 1)
+#model.save(path+'model')
+for i in range(100000):
+        text = chain(100,df,'drug','icd10')
+        model = gensim.models.Word2Vec.load(path + 'model')
+        model.build_vocab(text, update=True)
+        model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
+        print(model.get_latest_training_loss())
+        model.save(path+'model')
 
 
