@@ -302,7 +302,7 @@ def get_chain_data(n):
 #print(data)
 #model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
 #model.save(path+'dc_model')
-
+'''
 for i in range(100000):
 	text = get_chain_data(100)
 	print (text)
@@ -311,6 +311,34 @@ for i in range(100000):
 	model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
 	print(model.get_latest_training_loss())
 	model.save(path+'dc_model')
+'''
 
+model = gensim.models.Word2Vec.load(path + 'dc_model')
+icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
+icd10_dict = dict(zip(icd10.code, icd10.cdesc))
+for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize = 1):
+	sn = str(df['sum_note'].iloc[0])
+	#print (sn)
+	n = sn.split(' ')
+	arr = []
+	for j in range(3):
+		sn1 = [sn[i:i + (j + 1)] for i in range(len(sn) - (j))]
+		hs = [' '.join(k) for k in sn1]
+		arr = arr + hs
+	#print (arr)
+	x = []
+	z = []
+	for w in arr:
+		if w in model.wv.vocab:
+			x.append(w)
+	similar_words = model.wv.most_similar(positive=x, topn=1000)
+	for d in similar_words:
+		if d[0] in icd10_dict:
+			z.append(d)
+	#print (x)
+	#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+	#print (sn)
+	print (z[:5])
+	#break
 
 
