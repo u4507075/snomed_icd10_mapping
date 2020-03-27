@@ -297,21 +297,20 @@ def get_chain_data(n):
 			df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
 			df = df.sample()
 	return data
+def word2vec():
+	data = get_chain_data(1000)
+	print(data)
+	#model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
+	#model.save(path+'dc_model')
 
-#data = get_chain_data(1000)
-#print(data)
-#model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
-#model.save(path+'dc_model')
-'''
-for i in range(100000):
-	text = get_chain_data(100)
-	print (text)
-	model = gensim.models.Word2Vec.load(path + 'dc_model')
-	model.build_vocab(text, update=True)
-	model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
-	print(model.get_latest_training_loss())
-	model.save(path+'dc_model')
-'''
+	for i in range(100000):
+		text = get_chain_data(100)
+		print (text)
+		model = gensim.models.Word2Vec.load(path + 'dc_model')
+		model.build_vocab(text, update=True)
+		model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
+		print(model.get_latest_training_loss())
+		model.save(path+'dc_model')
 
 model = gensim.models.Word2Vec.load(path + 'dc_model')
 icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
@@ -336,9 +335,11 @@ for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize
 		if d[0] in icd10_dict:
 			z.append(d)
 	#print (x)
-	#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
-	#print (sn)
-	print (z[:5])
+	if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+		print (sn)
+		print (z)
 	#break
+
+
 
 
