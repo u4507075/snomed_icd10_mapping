@@ -317,6 +317,7 @@ icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
 icd10_dict = dict(zip(icd10.code, icd10.cdesc))
 for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize = 1):
 	sn = str(df['sum_note'].iloc[0])
+	dx1 = str(df['dx1_code'].iloc[0])
 	#print (sn)
 	n = sn.split(' ')
 	arr = []
@@ -330,14 +331,19 @@ for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize
 	for w in arr:
 		if w in model.wv.vocab:
 			x.append(w)
-	similar_words = model.wv.most_similar(positive=x, topn=1000)
+	similar_words = model.wv.most_similar(positive=x, topn=2000)
+	order = 0
+	print (df.index)
 	for d in similar_words:
 		if d[0] in icd10_dict:
 			z.append(d)
+			if dx1 == d[0]:
+				print(dx1 + ' ' + str(order))
+			order = order + 1
 	#print (x)
-	if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
-		print (sn)
-		print (z)
+	#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+		#print (sn)
+		#print (z)
 	#break
 
 
