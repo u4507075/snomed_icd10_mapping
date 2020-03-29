@@ -291,10 +291,10 @@ def get_chain_data(n):
 		#print(data)
 		#print (col)
 		if col == 'keywords':
-			df = pd.read_csv(path+'keywords/keyword_'+valx+'.csv')
+			df = pd.read_csv(path+'keywords/keyword_'+str(valx)+'.csv')
 			df = df.sample()
 		else:
-			df = pd.read_csv(path + 'icd10/icd10_' + valx + '.csv')
+			df = pd.read_csv(path + 'icd10/icd10_' + str(valx) + '.csv')
 			df = df.sample()
 	return data
 def word2vec():
@@ -312,6 +312,9 @@ def word2vec():
 		print(model.get_latest_training_loss())
 		model.save(path+'dc_model')
 
+word2vec()
+
+'''
 model = gensim.models.Word2Vec.load(path + 'dc_model')
 icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
 icd10_dict = dict(zip(icd10.code, icd10.cdesc))
@@ -335,11 +338,11 @@ for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize
 		if d[0] in icd10_dict:
 			z.append(d)
 	#print (x)
-	if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
-		print (sn)
-		print (z)
+	#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+	print (sn)
+	print (z[:10])
 	#break
-
+'''
 
 
 
