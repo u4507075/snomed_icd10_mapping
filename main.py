@@ -16,10 +16,11 @@ import gensim
 from itertools import combinations
 from preprocess.compare_text import algorithm_validity
 from preprocess.compare_text import tf_idf
+import statistics
 
 # You will have to download the set of stop words the first time
-# import nltk
-# nltk.download('stopwords')
+#import nltk
+#nltk.download('stopwords')
 stop_words = stopwords.words('english')
 
 # secret directory to the dataset
@@ -254,19 +255,32 @@ data = []
 #	print(data)
 
 
-def file_assign():
-	filelist = [ f for f in os.listdir(path+'keywords/') if f.endswith(".csv") ]
-	for f in filelist:
-		os.remove(os.path.join(path+'keywords/', f))
-	filelist = [ f for f in os.listdir(path+'icd10/') if f.endswith(".csv") ]
-	for f in filelist:
-		os.remove(os.path.join(path+'icd10/', f))
-	for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 1):
+def file_assign(replace=False):
+	stop_row = 39438752
+	last = stop_row
+	n = range(1, stop_row-1)
+	#n = None
+
+	if replace:
+		filelist = [ f for f in os.listdir(path+'keywords/') if f.endswith(".csv") ]
+		for f in filelist:
+			os.remove(os.path.join(path+'keywords/', f))
+		filelist = [ f for f in os.listdir(path+'icd10/') if f.endswith(".csv") ]
+		for f in filelist:
+			os.remove(os.path.join(path+'icd10/', f))
+		n = None
+	for df in pd.read_csv(path+'bag.csv', index_col = 0, chunksize = 1, skiprows=n):
 		k = 'keyword_'+str(df['keywords'].iloc[0])
+		k = k[:210]
 		i = 'icd10_'+str(df['icd10'].iloc[0])
-		print (df)
-		save_file(df, path+'keywords/'+str(k)+'.csv')
-		save_file(df, path+'icd10/'+str(i)+'.csv')
+		save_file(df, path + 'keywords/' + str(k) + '.csv')
+		save_file(df, path + 'icd10/' + str(i) + '.csv')
+		f = open(path + "log.txt", "w")
+		f.write(str(last))
+		f.close()
+		print(last)
+		last = last+1
+
 def get_row2(col,x):
 	if col == 'keywords':
 		return [[str(x['keywords'].iloc[0]), str(x['keywords'].iloc[0])], [str(x['icd10'].iloc[0]), str(x['keywords'].iloc[0])]], 'icd10', x['icd10'].iloc[0]
@@ -278,7 +292,7 @@ def get_chain_data(n):
 	mypath = path+'icd10/'
 	list_icd10 = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 	start = random.choice(list_icd10)
-	print (start)
+	#print (start)
 	df = pd.read_csv(path+'icd10/'+start, index_col= 0)
 	df = df.sample()
 
@@ -291,64 +305,72 @@ def get_chain_data(n):
 		#print(data)
 		#print (col)
 		if col == 'keywords':
-			df = pd.read_csv(path+'keywords/keyword_'+str(valx)+'.csv')
+			df = pd.read_csv(path+'keywords/keyword_'+str(str(valx)[:210])+'.csv')
 			df = df.sample()
 		else:
 			df = pd.read_csv(path + 'icd10/icd10_' + str(valx) + '.csv')
 			df = df.sample()
 	return data
 def word2vec():
-	data = get_chain_data(1000)
-	print(data)
+	#data = get_chain_data(1000)
+	#print(data)
 	#model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
 	#model.save(path+'dc_model')
 
 	for i in range(100000):
 		text = get_chain_data(100)
-		print (text)
 		model = gensim.models.Word2Vec.load(path + 'dc_model')
 		model.build_vocab(text, update=True)
 		model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
+		print(i)
 		print(model.get_latest_training_loss())
 		model.save(path+'dc_model')
 
-word2vec()
+def validate():
+	model = gensim.models.Word2Vec.load(path + 'dc_model')
+	icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
+	icd10_dict = dict(zip(icd10.code, icd10.cdesc))
+	avg_rank = []
 
-'''
-model = gensim.models.Word2Vec.load(path + 'dc_model')
-icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
-icd10_dict = dict(zip(icd10.code, icd10.cdesc))
-for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize = 1):
-	sn = str(df['sum_note'].iloc[0])
-	dx1 = str(df['dx1_code'].iloc[0])
-	#print (sn)
-	n = sn.split(' ')
-	arr = []
-	for j in range(3):
-		sn1 = [sn[i:i + (j + 1)] for i in range(len(sn) - (j))]
-		hs = [' '.join(k) for k in sn1]
-		arr = arr + hs
-	#print (arr)
-	x = []
-	z = []
-	for w in arr:
-		if w in model.wv.vocab:
-			x.append(w)
-	similar_words = model.wv.most_similar(positive=x, topn=2000)
-	order = 0
-	print (df.index)
-	for d in similar_words:
-		if d[0] in icd10_dict:
-			z.append(d)
-			if dx1 == d[0]:
-				print(dx1 + ' ' + str(order))
-			order = order + 1
-	#print (x)
-	#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+	for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize = 1):
+		sn = str(df['sum_note'].iloc[0])
+		dx1 = str(df['dx1_code'].iloc[0])
 		#print (sn)
-		#print (z)
-	#break
-'''
+		n = sn.split(' ')
+		arr = []
+		for j in range(3):
+			sn1 = [sn[i:i + (j + 1)] for i in range(len(sn) - (j))]
+			hs = [' '.join(k) for k in sn1]
+			arr = arr + hs
+		#print (arr)
+		x = []
+		z = []
+		for w in arr:
+			if w in model.wv.vocab:
+				x.append(w)
+		similar_words = model.wv.most_similar(positive=x, topn=2000)
+		order = 0
+		rank = -1
+		#print (df.index)
+		for d in similar_words:
+			if d[0] in icd10_dict:
+				z.append(d)
+				if dx1 == d[0]:
+					print(dx1 + ' ' + str(order))
+					rank = order
+				order = order + 1
+		if rank == -1:
+			rank = order
+		avg_rank.append(rank)
+		#print(str(statistics.mean(avg_rank))+'/'+str(order))
+		#print (x)
+		print(z[:3])
+		#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
+			#print (sn)
+			#print (z)
+		#break
 
 
-
+#file_assign()
+word2vec()
+#validate()
