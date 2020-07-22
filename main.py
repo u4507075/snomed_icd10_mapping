@@ -312,24 +312,44 @@ def get_chain_data(n):
 			df = df.sample()
 	return data
 def word2vec():
-	#data = get_chain_data(1000)
-	#print(data)
-	#model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
-	#model.save(path+'dc_model')
-
-	for i in range(100000):
-		text = get_chain_data(100)
-		model = gensim.models.Word2Vec.load(path + 'dc_model')
+	'''
+	data = get_chain_data(1000)
+	print(data)
+	model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
+	model.save(path+'dc_model')
+	'''
+	data = get_chain_data(1000)
+	modelname = 'dc_model'
+	t = 1000000
+	p = 100
+	s = 0
+	model = None
+	for i in range(int(t / p), -1, -1 * p):
+		file = Path(path + modelname + '_' + str(i))
+		if file.is_file():
+			model = gensim.models.Word2Vec.load(path + modelname + '_' + str(i))
+			s = i
+			break
+	if model is None:
+		model = gensim.models.Word2Vec(data, compute_loss = True, sg = 1)
+	print(s)
+	for i in range(s+1,t):
+		text = get_chain_data(1000)
+		#model = gensim.models.Word2Vec.load(path + 'dc_model')
 		model.build_vocab(text, update=True)
 		model.train(text, total_examples=model.corpus_count, compute_loss = True, epochs=10)
 		print(i)
 		print(model.get_latest_training_loss())
-		model.save(path+'dc_model')
+		#model.save(path+'dc_model')
+		if i % p == 0:
+			model.save(path + modelname + '_' + str(i))
+			print('saved ' + modelname + '_' + str(i))
 
 def validate():
 	model = gensim.models.Word2Vec.load(path + 'dc_model')
 	icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
 	icd10_dict = dict(zip(icd10.code, icd10.cdesc))
+	print(len(icd10_dict))
 	avg_rank = []
 
 	for df in pd.read_csv(path+'snomed/discharge_clean.csv', index_col= 0, chunksize = 1):
@@ -348,9 +368,10 @@ def validate():
 		for w in arr:
 			if w in model.wv.vocab:
 				x.append(w)
-		similar_words = model.wv.most_similar(positive=x, topn=2000)
+		similar_words = model.wv.most_similar(positive=x, topn=20000)
 		order = 0
 		rank = -1
+		found = False
 		#print (df.index)
 		for d in similar_words:
 			if d[0] in icd10_dict:
@@ -358,13 +379,16 @@ def validate():
 				if dx1 == d[0]:
 					print(dx1 + ' ' + str(order))
 					rank = order
+					found = True
 				order = order + 1
 		if rank == -1:
 			rank = order
 		avg_rank.append(rank)
 		#print(str(statistics.mean(avg_rank))+'/'+str(order))
 		#print (x)
-		print(z[:3])
+		if not found:
+			print('not found')
+		#print(z[:3])
 		#if len(z) > 0 and z[0][0] != 'C221' and z[0][0] != 'D693':
 			#print (sn)
 			#print (z)
