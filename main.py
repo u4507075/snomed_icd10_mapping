@@ -105,6 +105,10 @@ def map_icd10():
 #tf_idf()
 #algorithm_validity()
 
+
+
+#2nd approach with deep learning method
+
 def distance():
 	df = pd.read_csv(path+'result_100.csv', index_col= 0)
 	#print (df)
@@ -305,8 +309,9 @@ def get_chain_data(n):
 		#print(data)
 		#print (col)
 		if col == 'keywords':
-			df = pd.read_csv(path+'keywords/keyword_'+str(str(valx)[:210])+'.csv')
-			df = df.sample()
+			if isfile(path+'keywords/keyword_'+str(str(valx)[:210])+'.csv'):
+				df = pd.read_csv(path+'keywords/keyword_'+str(str(valx)[:210])+'.csv')
+				df = df.sample()
 		else:
 			df = pd.read_csv(path + 'icd10/icd10_' + str(valx) + '.csv')
 			df = df.sample()
@@ -324,7 +329,7 @@ def word2vec():
 	p = 100
 	s = 0
 	model = None
-	for i in range(int(t / p), -1, -1 * p):
+	for i in range(t, -1, -1 * p):
 		file = Path(path + modelname + '_' + str(i))
 		if file.is_file():
 			model = gensim.models.Word2Vec.load(path + modelname + '_' + str(i))
