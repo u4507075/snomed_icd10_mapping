@@ -351,7 +351,7 @@ def word2vec():
 			print('saved ' + modelname + '_' + str(i))
 
 def validate():
-	model = gensim.models.Word2Vec.load(path + 'dc_model')
+	model = gensim.models.Word2Vec.load(path + 'dc_model_71900')
 	icd10 = pd.read_csv(path+'snomed/icd10.csv',index_col=0)
 	icd10_dict = dict(zip(icd10.code, icd10.cdesc))
 	print(len(icd10_dict))
@@ -389,7 +389,7 @@ def validate():
 		if rank == -1:
 			rank = order
 		avg_rank.append(rank)
-		#print(str(statistics.mean(avg_rank))+'/'+str(order))
+		print(str(statistics.mean(avg_rank))+'/'+str(order))
 		#print (x)
 		if not found:
 			print('not found')
@@ -399,7 +399,27 @@ def validate():
 			#print (z)
 		#break
 
+def save_full_map(n):
+	model = gensim.models.Word2Vec.load(path + 'dc_model_'+str(n))
+	icd10 = pd.read_csv(path + 'snomed/icd10.csv', index_col=0)
+	icd10_map = dict(zip(icd10['code'], icd10['cdesc']))
+	word_list = list(model.wv.vocab)
+	word_list = [x for x in word_list if x not in icd10.code.values.tolist()]
+	total = []
+	for w in word_list:
+		similar_words = model.wv.most_similar(positive=[w], topn=len(model.wv.vocab))
+		result = pd.DataFrame(similar_words, columns=['icd10', 'similarity'])
+		result['keyword'] = w
+		total.append(result[result['icd10'].isin(icd10.code)][['keyword','icd10','similarity']])
+
+	r = pd.concat(total)
+	r = r.pivot(index='keyword', columns='icd10', values='similarity').reset_index()
+	print(r)
+	r.to_csv(path+'keyword_fullmap_'+str(n)+'.csv')
 
 #file_assign()
 word2vec()
 #validate()
+
+#save_full_map(71900)
+#print(get_chain_data(10))
